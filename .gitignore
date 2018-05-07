@@ -1,0 +1,7 @@
+.gradle/
+.idea/
+build/
+
+KunouCore.iml
+gradlew
+gradlew.bat
