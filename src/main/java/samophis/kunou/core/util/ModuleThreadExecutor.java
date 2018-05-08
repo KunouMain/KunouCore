@@ -10,6 +10,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * The executor class that submits new Module Threads, sets them up, handles the executor service and the thread counter.
+ *
+ * @author SamOphis
+ * @since 0.1
+ */
+
 public class ModuleThreadExecutor {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModuleThreadExecutor.class);
     private static final AtomicInteger COUNTER = new AtomicInteger(0);

@@ -8,28 +8,36 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * A default, helper implementation to serve as a very basic {@link Module Module} Base.
+ *
+ * @since 0.1
+ * @author SamOphis
+ */
+
 public abstract class AbstractModuleBase implements Module {
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractModuleBase.class);
     private final ModuleLoader loader;
     @SuppressWarnings("WeakerAccess")
-    protected volatile Status status;
+    protected volatile State state;
     protected AbstractModuleBase(@Nonnull ModuleLoader loader) {
         this.loader = Objects.requireNonNull(loader);
-        this.status = Status.DEAD;
+        this.state = State.DEAD;
     }
     @Override
     public ModuleLoader getLoader() {
         return loader;
     }
     @Override
-    public Status getStatus() {
-        return status;
+    public State getState() {
+        return state;
     }
     @Override
     public void onStart(@Nullable String... args) {
-        status = Status.STARTED;
+        /* -- No need to cover all states if there's no distinction between them, which is why I'm setting it to READY without STARTED first -- */
+        state = State.STARTING;
         LOGGER.info("Starting EMPTY {} {} by {} with initial arguments - {} on Thread: {}", getName(), getVersion(), getAuthor(), Arrays.toString(args), Thread.currentThread().getName());
-        status = Status.READY;
+        state = State.READY;
     }
     @Override
     public void onMessage(@Nonnull String... args) {
@@ -37,7 +45,8 @@ public abstract class AbstractModuleBase implements Module {
     }
     @Override
     public void onDeath() {
-        status = Status.DEAD;
+        state = State.SHUTTING_DOWN;
         LOGGER.info("EMPTY {} {} by {} on Thread: {} is dead!", getName(), getVersion(), getAuthor(), Thread.currentThread().getName());
+        state = State.DEAD;
     }
 }

@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import samophis.kunou.core.exceptions.ModuleException;
 import samophis.kunou.core.modules.ModuleLoader;
 import samophis.kunou.core.modules.Module;
-import samophis.kunou.core.modules.Status;
+import samophis.kunou.core.modules.State;
 import samophis.kunou.core.util.ModuleThreadExecutor;
 
 import javax.annotation.Nonnull;
@@ -51,9 +51,9 @@ public class ModuleLoaderImpl implements ModuleLoader {
             LOGGER.warn("{} {} by {} does not belong to this loader!", name, version, author);
             throw new ModuleException("Module does not belong to this loader!");
         }
-        Status status = module.getStatus();
-        String sName = status.name();
-        switch (status) {
+        State state = module.getState();
+        String sName = state.name();
+        switch (state) {
             case DEAD:
                 ModuleThreadExecutor.runModuleMethod(() -> {
                     module.onStart(args);
@@ -65,10 +65,10 @@ public class ModuleLoaderImpl implements ModuleLoader {
             case STARTED:
             case STARTING:
                 LOGGER.warn("{} {} by {} is already ready or starting up! State = {}", name, version, author, sName);
-                throw new IllegalStateException(String.format("State of %s %s by %s = %s!", name, version, author, sName));
+                throw new ModuleException(String.format("State of %s %s by %s = %s!", name, version, author, sName));
             case SHUTTING_DOWN:
                 LOGGER.warn("{} {} by {} is shutting down. Wait for it to properly shut down before re-starting it!", name, version, author);
-                throw new IllegalStateException(String.format("State of %s %s by %s = %s!", name, version, author, sName));
+                throw new ModuleException(String.format("State of %s %s by %s = %s!", name, version, author, sName));
         }
     }
     @Override
@@ -93,9 +93,9 @@ public class ModuleLoaderImpl implements ModuleLoader {
             LOGGER.warn("{} {} by {} does not belong to this loader!", name, version, author);
             throw new ModuleException("Module does not belong to this loader!");
         }
-        Status status = module.getStatus();
-        String sName = status.name();
-        switch (status) {
+        State state = module.getState();
+        String sName = state.name();
+        switch (state) {
             case READY:
                 ModuleThreadExecutor.runModuleMethod(() -> {
                     module.onDeath();
@@ -105,7 +105,7 @@ public class ModuleLoaderImpl implements ModuleLoader {
                 break;
             default:
                 LOGGER.warn("{} {} by {} is already dead or not ready to shutdown yet! State = {}", name, version, author, sName);
-                throw new IllegalStateException(String.format("State of %s %s by %s = %s!", name, version, author, sName));
+                throw new ModuleException(String.format("State of %s %s by %s = %s!", name, version, author, sName));
         }
     }
     @Override
@@ -116,6 +116,10 @@ public class ModuleLoaderImpl implements ModuleLoader {
     public void sendMessage(@Nonnull Module module, @Nullable BiConsumer<ModuleLoader, Module> andThen, @Nonnull String... args) {
         Objects.requireNonNull(module);
         Objects.requireNonNull(args);
+        if (args.length == 0) {
+            LOGGER.warn("Attempt to send a zero-length message to the {}!", module.getName());
+            throw new IllegalArgumentException("length of args = 0");
+        }
         String name = module.getName();
         String version = module.getVersion();
         String author = module.getAuthor();
@@ -123,9 +127,9 @@ public class ModuleLoaderImpl implements ModuleLoader {
             LOGGER.warn("{} {} by {} does not belong to this loader!", name, version, author);
             throw new ModuleException("Module does not belong to this loader!");
         }
-        Status status = module.getStatus();
-        String sName = status.name();
-        switch (status) {
+        State state = module.getState();
+        String sName = state.name();
+        switch (state) {
             case READY:
                 ModuleThreadExecutor.runModuleMethod(() -> {
                     module.onMessage(args);
@@ -135,7 +139,7 @@ public class ModuleLoaderImpl implements ModuleLoader {
                 break;
             default:
                 LOGGER.warn("{} {} by {} is not ready to accept new messages! State = {}", name, version, author, sName);
-                throw new IllegalStateException(String.format("State of %s %s by %s = %s!", name, version, author, sName));
+                throw new ModuleException(String.format("State of %s %s by %s = %s!", name, version, author, sName));
         }
     }
 }
