@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.KunouMain:KunouCore:v0.1'
+    compile 'com.github.KunouMain:KunouCore:v0.1.1'
 }
 ```
 
