@@ -55,7 +55,7 @@ public interface ModuleLoader {
     /**
      * Internally calls the sendMessage overload and provides {@code null} for its {@code andThen} parameter.
      * <br><p>Note: Modules are <b>expected to handle their own state for every event that occurs. The ModuleLoader has no obligation to do this automatically.</b></p>
-     * @param module The <b>not-null</b> {@link Module Module} to send a message to. <b>MUST</b> be in the {@link State#READY} state to accept messages.
+     * @param module The <b>not-null</b> {@link Module Module} to send a message to. <b>MUST</b> be in the {@link State#READY READY} state to accept messages.
      * @param args The <b>not-null and not-empty</b> arguments to pass to the {@link Module Module} for it to handle.
      * @throws NullPointerException If {@code module} or {@code args} are null.
      * @throws IllegalArgumentException If {@code args} has a length of 0.
@@ -67,7 +67,7 @@ public interface ModuleLoader {
     /**
      * Sends a message to a {@link Module Module} with possible follow-up code (due to the asynchronous nature of modules).
      * <br><p>Note: Modules are <b>expected to handle their own state for every event that occurs. The ModuleLoader has no obligation to do this automatically.</b></p>
-     * @param module The <b>non-null</b> {@link Module Module} to send a message to. <b>MUST</b> be in the {@link State#READY} state to accept messages.
+     * @param module The <b>non-null</b> {@link Module Module} to send a message to. <b>MUST</b> be in the {@link State#READY READY} state to accept messages.
      * @param andThen The <b>possibly-null</b> follow-up code, executing in the same thread right after. Set this value to null for no code to run.
      * @param args The <b>not-null and not-empty</b> arguments to pass to the {@link Module Module} for it to handle.
      * @throws NullPointerException If {@code module} or {@code args} are null.
@@ -80,7 +80,7 @@ public interface ModuleLoader {
     /**
      * Starts a {@link Module Module} with possible follow-up code (due to the asynchronous nature of modules) and arguments.
      * <br><p>Note: Modules are <b>expected to handle their own state for every event that occurs. The ModuleLoader has no obligation to do this automatically.</b></p>
-     * @param module The <b>non-null</b> {@link Module Module} to start. <b>MUST</b> be in the {@link State#DEAD} state to start again.
+     * @param module The <b>non-null</b> {@link Module Module} to start. <b>MUST</b> be in the {@link State#DEAD DEAD} state to start again.
      * @param andThen The <b>possibly-null</b> follow-up code, executing in the same thread right after. Set this value to null for no code to run.
      * @param args The <b>possibly-null and possibly-empty</b> arguments to pass to the {@link Module Module} for it to handle.
      * @throws NullPointerException If {@code module} is null.
@@ -94,7 +94,7 @@ public interface ModuleLoader {
     /**
      * Starts a {@link Module Module} with possible follow-up code (due to the asynchronous nature of modules) and no additional arguments.
      * <br><p>Note: Modules are <b>expected to handle their own state for every event that occurs. The ModuleLoader has no obligation to do this automatically.</b></p>
-     * @param module The <b>non-null</b> {@link Module Module} to start. <b>MUST</b> be in the {@link State#DEAD} state to start again.
+     * @param module The <b>non-null</b> {@link Module Module} to start. <b>MUST</b> be in the {@link State#DEAD DEAD} state to start again.
      * @param andThen The <b>possibly-null</b> follow-up code, executing in the same thread right after. Set this value to null for no code to run.
      * @throws NullPointerException If {@code module} is null.
      * @throws samophis.kunou.core.exceptions.ModuleException If the module does not belong to this loader, if it's not dead or if an uncaught exception occurs in the Module Thread.
@@ -106,7 +106,7 @@ public interface ModuleLoader {
     /**
      * Starts a {@link Module Module} with no follow-up code or additional arguments.
      * <br><p>Note: Modules are <b>expected to handle their own state for every event that occurs. The ModuleLoader has no obligation to do this automatically.</b></p>
-     * @param module The <b>non-null</b> {@link Module Module} to start. <b>MUST</b> be in the {@link State#DEAD} state to start again.
+     * @param module The <b>non-null</b> {@link Module Module} to start. <b>MUST</b> be in the {@link State#DEAD DEAD} state to start again.
      * @throws NullPointerException If {@code module} is null.
      * @throws samophis.kunou.core.exceptions.ModuleException If the module does not belong to this loader, if it's not dead or if an uncaught exception occurs in the Module Thread.
      * @see ModuleLoader#startModule(Module, BiConsumer)
@@ -117,7 +117,7 @@ public interface ModuleLoader {
     /**
      * Kills a {@link Module Module} with no follow-up code.
      * <br><p>Note: Modules, when dead or shutting down, should properly set their {@link State State} so that the loader can manage it properly. It has no obligation to do this automatically.</p>
-     * @param module The <b>non-null</b> {@link Module Module} to kill. <b>MUST</b> be in the {@link State#READY} <b>ONLY (NOT {@link State#STARTED}</b> before it can be killed.
+     * @param module The <b>non-null</b> {@link Module Module} to kill. <b>MUST</b> be in the {@link State#READY READY} <b>ONLY (NOT {@link State#STARTED STARTED}</b> before it can be killed.
      * @throws NullPointerException If {@code module} is null.
      * @throws samophis.kunou.core.exceptions.ModuleException If the module does not belong to this loader, if it's not ready or if an uncaught exception occurs in the Module Thread.
      * @see ModuleLoader#killModule(Module, BiConsumer)
@@ -127,7 +127,7 @@ public interface ModuleLoader {
     /**
      * Kills a {@link Module Module} with possible follow-up code.
      * <br><p>Note: Modules, when dead or shutting down, should properly set their {@link State State} so that the loader can manage it properly. It has no obligation to do this automatically.</p>
-     * @param module The <b>non-null</b> {@link Module Module} to kill. <b>MUST</b> be in the {@link State#READY} <b>ONLY (NOT {@link State#STARTED}</b> before it can be killed.
+     * @param module The <b>non-null</b> {@link Module Module} to kill. <b>MUST</b> be in the {@link State#READY} <b>ONLY (NOT {@link State#STARTED STARTED}</b> before it can be killed.
      * @param andThen The <b>possibly-null</b> follow-up code to run in the exact same thread after the shutdown. Set to null for no follow-up code.
      * @throws NullPointerException If {@code module} is null.
      * @throws samophis.kunou.core.exceptions.ModuleException If the module does not belong to this loader, if it's not ready or if an uncaught exception occurs in the Module Thread.

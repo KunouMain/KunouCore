@@ -1,5 +1,7 @@
 package samophis.kunou.core.modules;
 
+import samophis.kunou.core.util.ModuleThreadExecutor;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -78,4 +80,16 @@ public interface Module {
      * To get around this, send a message warning of an incoming death event and use the {@code andThen} follow-up code to shut down the module.</p>
      */
     void onDeath();
+
+    /**
+     * Runs ordinary code in a cached, module thread pool (obviously asynchronously).
+     * <br><p>This can be used for module interfaces with methods that KunouCore doesn't automatically run in different threads.
+     * All module code should be asynchronous so as to not block any other operations using the same module.</p>
+     * @param runnable The <b>not-null</b> code to run asynchronously.
+     * @throws NullPointerException If {@code 'runnable'} is null.
+     * @throws samophis.kunou.core.exceptions.ModuleException If an uncaught exception occurs inside a module thread.
+     */
+    static void runAsync(@Nonnull Runnable runnable) {
+        ModuleThreadExecutor.runModuleMethod(runnable, false);
+    }
 }
